@@ -5,11 +5,13 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinkieyun.fitnesscenter.Constants.API;
@@ -31,9 +33,11 @@ public class StaffController {
     private final PersonService personService;
     private final AuthenticationService authenticationService;
 
-    @PostMapping(API.STAFFS + "/sale")
-    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRoleSale(@RequestBody IdRequestDTO idRequestDTO, Pageable pageable) {
-        return ResponseEntity.ok().body(personService.findByOrganizationIdAndRoleSale(idRequestDTO.getId(), pageable));
+    // public ResponseEntity<Page<PersonDTO>> findByOrganizationId()
+
+    @GetMapping(API.STAFFS + "/sale")
+    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRoleSale(@RequestParam Integer id, Pageable pageable) {
+        return ResponseEntity.ok().body(personService.findByOrganizationIdAndRoleSale(id, pageable));
     }
 
     @PostMapping(API.STAFFS + "/personal-trainer")

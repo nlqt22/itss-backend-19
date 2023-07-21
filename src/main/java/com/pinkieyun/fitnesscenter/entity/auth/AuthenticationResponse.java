@@ -20,4 +20,7 @@ public class AuthenticationResponse {
     private String refreshToken;
     
     private String role;
+
+    @JsonProperty("organization_id")
+    private Integer organizationId;
 }

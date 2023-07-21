@@ -106,6 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .role(account.getRole().getName())
+                .organizationId(account.getOrganization().getId())
                 .build();
     }
 
