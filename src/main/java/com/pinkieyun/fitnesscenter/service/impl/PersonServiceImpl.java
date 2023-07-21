@@ -17,6 +17,7 @@ import com.pinkieyun.fitnesscenter.entity.dto.AccountDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PersonDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PersonFormDTO;
 import com.pinkieyun.fitnesscenter.repository.PersonRepository;
+import com.pinkieyun.fitnesscenter.service.AccountService;
 import com.pinkieyun.fitnesscenter.service.PersonService;
 import com.pinkieyun.fitnesscenter.service.QueryService;
 import com.pinkieyun.fitnesscenter.service.criteria.PersonCriteria;
@@ -31,6 +32,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
     private final ModelMapper modalMapper;
     private final QueryService<Person> queryService;
+    private final AccountService accountService;
 
     @Override
     public PersonDTO toDTO(Person person) {
@@ -77,32 +79,28 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Page<PersonDTO> findAllByCriteria(PersonCriteria criteria, Pageable pageable) {
         Specification<Person> spec = buildSpecification(criteria);
-
         Page<Person> page = personRepository.findAll(spec, pageable);
-       
-        List<PersonDTO> list = page.getContent().stream().map(person -> toDTO(person)).collect(Collectors.toList());
-
-        return new PageImpl<>(list, pageable, page.getTotalElements());
-    }
-
-    @Override
-    public Page<PersonDTO> findByOrganizationIdAndRoleSale(Integer organizationId, Pageable pageable) {
-
-        Page<Person> page = personRepository.findByRoleSale(organizationId, pageable);
         List<PersonDTO> list = page.getContent().stream().map(person -> toDTO(person)).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
     @Override
-    public Page<PersonDTO> findByOrganizationIdAndRolePT(Integer organizationId, Pageable pageable) {
-        Page<Person> page = personRepository.findByRolePT(organizationId, pageable);
+    public Page<PersonDTO> findAllStaffSaleActive(Pageable pageable) {
+        Page<Person> page = personRepository.findByRoleSale(accountService.getCurrentOrganization().getId(), pageable);
         List<PersonDTO> list = page.getContent().stream().map(person -> toDTO(person)).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
     @Override
-    public Page<PersonDTO> findByOrganizationIdAndRoleMember(Integer organizationId, Pageable pageable) {
-        Page<Person> page = personRepository.findByRoleMember(organizationId, pageable);
+    public Page<PersonDTO> findAllStaffPTActive(Pageable pageable) {
+        Page<Person> page = personRepository.findByRolePT(accountService.getCurrentOrganization().getId(), pageable);
+        List<PersonDTO> list = page.getContent().stream().map(person -> toDTO(person)).collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+
+    @Override
+    public Page<PersonDTO> findAllMemberActive(Pageable pageable) {
+        Page<Person> page = personRepository.findByRoleMember(accountService.getCurrentOrganization().getId(), pageable);
         List<PersonDTO> list = page.getContent().stream().map(person -> toDTO(person)).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
@@ -127,7 +125,15 @@ public class PersonServiceImpl implements PersonService {
     public Optional<PersonDTO> update(Integer id, PersonFormDTO personFormDTO) {
         Person person = modalMapper.map(personFormDTO, Person.class);
         update(id, person);
-        return Optional.ofNullable(modalMapper.map(person, PersonDTO.class));
+        return Optional.of(toDTO(person));
+    }
+
+    @Override
+    @Transactional
+    public Optional<PersonDTO> changeActive(Integer id) {
+        Person person = findOne(id).get();
+        accountService.changeActive(person.getAccount().getId());
+        return Optional.of(toDTO(person));
     }
 
 }

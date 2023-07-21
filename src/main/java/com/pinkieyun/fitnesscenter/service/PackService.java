@@ -11,7 +11,7 @@ public interface PackService {
     
     public Optional<Pack> findOne(Integer id);
 
-    public Page<Pack> findByOrganizationId(Integer organizationId, Pageable pageable);
+    public Page<Pack> findAllActive(Pageable pageable);
 
     public Pack save(Pack pack);
 

@@ -11,7 +11,7 @@ public interface EquipmentService {
 
     public Optional<Equipment> findOne(Integer id);
 
-    public Page<Equipment> findByOrganizationId(Integer organizationId, Pageable pageable);
+    public Page<Equipment> findAll(Pageable pageable);
 
     public Equipment save(Equipment equipment);
 

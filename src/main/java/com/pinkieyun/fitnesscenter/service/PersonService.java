@@ -14,11 +14,11 @@ public interface PersonService {
 
     public Page<PersonDTO> findAllByCriteria(PersonCriteria criteria, Pageable pageable);
     
-    public Page<PersonDTO> findByOrganizationIdAndRoleSale(Integer organizationId, Pageable pageable);
+    public Page<PersonDTO> findAllStaffSaleActive(Pageable pageable);
     
-    public Page<PersonDTO> findByOrganizationIdAndRolePT(Integer organizationId, Pageable pageable);
+    public Page<PersonDTO> findAllStaffPTActive(Pageable pageable);
 
-    public Page<PersonDTO> findByOrganizationIdAndRoleMember(Integer organizationId, Pageable pageable);
+    public Page<PersonDTO> findAllMemberActive(Pageable pageable);
 
     public Optional<Person> findOne(Integer id);
 
@@ -31,4 +31,6 @@ public interface PersonService {
     public Person update (Integer id, Person person);
 
     public Optional<PersonDTO> update(Integer id, PersonFormDTO personFormDTO);
+
+    public Optional<PersonDTO> changeActive(Integer id);
 }

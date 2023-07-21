@@ -15,6 +15,7 @@ import com.pinkieyun.fitnesscenter.entity.Payment;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentFormDTO;
 import com.pinkieyun.fitnesscenter.repository.PaymentRepository;
+import com.pinkieyun.fitnesscenter.service.AccountService;
 import com.pinkieyun.fitnesscenter.service.PackService;
 import com.pinkieyun.fitnesscenter.service.PaymentService;
 import com.pinkieyun.fitnesscenter.service.PersonService;
@@ -29,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
     private final PersonService personService;
+    private final AccountService accountService;
     private final PackService packService;
 
     private PaymentDTO toDTO(Payment payment) {
@@ -52,16 +54,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Page<PaymentDTO> findByOrganizationId(Integer organizationId, Pageable pageable) {
-        Page<Payment> page = paymentRepository.findByOrganizationId(organizationId, pageable);
+    public Page<PaymentDTO> findAll(Pageable pageable) {
+        Page<Payment> page = paymentRepository.findByOrganizationId(accountService.getCurrentOrganization().getId(), pageable);
         List<PaymentDTO> list = page.getContent().stream().map(payment -> toDTO(payment)).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
     @Override
-    public Page<PaymentDTO> findByOrganizationIdAndMemberId(Integer organizationId, Integer memberId,
-            Pageable pageable) {
-        Page<Payment> page = paymentRepository.findByOrganizationIdAndMemberId(organizationId, memberId, pageable);
+    public Page<PaymentDTO> findYourAll(Pageable pageable) {
+        Page<Payment> page = paymentRepository.findByOrganizationIdAndMemberId( accountService.getCurrentOrganization().getId(), 
+                                                                                accountService.getCurrentPerson().getId(), 
+                                                                                pageable);
         List<PaymentDTO> list = page.getContent().stream().map(payment -> toDTO(payment)).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
@@ -75,20 +78,19 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public Optional<PaymentDTO> create(PaymentFormDTO paymentFormDTO) {
-        System.out.println(paymentFormDTO.getPackId() + "PACKID" + paymentFormDTO.getCreatorId());
-        
         Pack pack = packService.findOne(paymentFormDTO.getPackId()).get();
         
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expired = now.plusMonths(pack.getDuration());
 
         Payment payment = new Payment();
+
         payment.setActive(true);
         payment.setCreatedDate(now);
         payment.setExpiredDate(expired);
         payment.setName(pack.getName());
         payment.setPrice(pack.getPrice());
-        payment.setSale(personService.findOne(paymentFormDTO.getCreatorId()).get());
+        payment.setSale(accountService.getCurrentPerson());
         payment.setMember(personService.findOne(paymentFormDTO.getMemberId()).get());
         payment.setDuration(pack.getDuration());
         payment.setOrganization(pack.getOrganization());

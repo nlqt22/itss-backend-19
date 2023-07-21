@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinkieyun.fitnesscenter.Constants.API;
 import com.pinkieyun.fitnesscenter.entity.auth.AuthenticationResponse;
 import com.pinkieyun.fitnesscenter.entity.auth.RegisterRequest;
-import com.pinkieyun.fitnesscenter.entity.dto.IdRequestDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PersonDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PersonFormDTO;
 import com.pinkieyun.fitnesscenter.service.AuthenticationService;
@@ -36,13 +34,13 @@ public class StaffController {
     // public ResponseEntity<Page<PersonDTO>> findByOrganizationId()
 
     @GetMapping(API.STAFFS + "/sale")
-    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRoleSale(@RequestParam Integer id, Pageable pageable) {
-        return ResponseEntity.ok().body(personService.findByOrganizationIdAndRoleSale(id, pageable));
+    public ResponseEntity<Page<PersonDTO>> findAllStaffSaleActive(Pageable pageable) {
+        return ResponseEntity.ok().body(personService.findAllStaffSaleActive(pageable));
     }
 
-    @PostMapping(API.STAFFS + "/personal-trainer")
-    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRolePT(@RequestBody IdRequestDTO idRequestDTO, Pageable pageable) {
-        return ResponseEntity.ok().body(personService.findByOrganizationIdAndRolePT(idRequestDTO.getId(), pageable));
+    @GetMapping(API.STAFFS + "/personal-trainer")
+    public ResponseEntity<Page<PersonDTO>> findAllStaffPTActive(Pageable pageable) {
+        return ResponseEntity.ok().body(personService.findAllStaffPTActive(pageable));
     }
 
     @PutMapping(API.STAFFS + "/{id}")
@@ -65,4 +63,5 @@ public class StaffController {
         Integer PT_ROLE_ID = 4;
         return ResponseEntity.ok(authenticationService.register(request, PT_ROLE_ID));
     }
+
 }

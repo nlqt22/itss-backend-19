@@ -13,9 +13,9 @@ public interface PaymentService {
     
     public Optional<Payment> findOne(Integer id);
 
-    public Page<PaymentDTO> findByOrganizationId(Integer organizationId, Pageable pageable);
+    public Page<PaymentDTO> findAll(Pageable pageable);
 
-    public Page<PaymentDTO> findByOrganizationIdAndMemberId(Integer organizationId, Integer memberId, Pageable pageable);
+    public Page<PaymentDTO> findYourAll(Pageable pageable);
 
     public Payment save(Payment payment);
 

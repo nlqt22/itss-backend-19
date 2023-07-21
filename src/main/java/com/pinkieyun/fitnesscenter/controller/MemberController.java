@@ -32,9 +32,8 @@ public class MemberController {
     private final AuthenticationService authenticationService;
     
     @PostMapping(API.MEMBERS)
-    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRoleMember(@RequestBody IdRequestDTO idRequestDTO, Pageable pageable) {
-        Integer organizationId = idRequestDTO.getId();
-        return ResponseEntity.ok().body(personService.findByOrganizationIdAndRoleMember(organizationId, pageable));
+    public ResponseEntity<Page<PersonDTO>> findByOrganizationIdAndRoleMember(Pageable pageable) {
+        return ResponseEntity.ok().body(personService.findAllMemberActive(pageable));
     }
 
     @PostMapping(API.MEMBERS + "/id")

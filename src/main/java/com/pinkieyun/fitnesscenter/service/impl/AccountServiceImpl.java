@@ -3,9 +3,13 @@ package com.pinkieyun.fitnesscenter.service.impl;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.pinkieyun.fitnesscenter.entity.Account;
+import com.pinkieyun.fitnesscenter.entity.Organization;
+import com.pinkieyun.fitnesscenter.entity.Person;
 import com.pinkieyun.fitnesscenter.entity.dto.AccountDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.AccountFormDTO;
 import com.pinkieyun.fitnesscenter.repository.AccountRepository;
@@ -20,6 +24,25 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final ModelMapper modalMapper;
+
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Organization getCurrentOrganization() {
+        return findByUsername(getCurrentUsername()).get().getOrganization();
+    }
+
+    @Override
+    public Person getCurrentPerson() {
+        return findByUsername(getCurrentUsername()).get().getPerson();
+    }
 
     private AccountDTO toDTO(Account account) {
         AccountDTO response = AccountDTO.builder()

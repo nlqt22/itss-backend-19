@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinkieyun.fitnesscenter.Constants.API;
-import com.pinkieyun.fitnesscenter.entity.dto.IdRequestDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentFormDTO;
 import com.pinkieyun.fitnesscenter.service.PaymentService;
@@ -26,8 +25,12 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping(API.PAYMENTS)
-    public ResponseEntity<Page<PaymentDTO>> findByOrganizationId(@RequestBody IdRequestDTO idRequestDTO, Pageable pageable) {
-        return ResponseEntity.ok().body(paymentService.findByOrganizationId(idRequestDTO.getId(), pageable));
+    public ResponseEntity<Page<PaymentDTO>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(paymentService.findAll(pageable));
+    }
+
+    public ResponseEntity<Page<PaymentDTO>> findYourAll(Pageable pageable) {
+        return ResponseEntity.ok().body(paymentService.findYourAll(pageable));
     }
 
     @PostMapping(API.PAYMENTS + "/create")
