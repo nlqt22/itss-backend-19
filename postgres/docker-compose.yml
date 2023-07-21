@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  fitnesscenter:
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    image: "postgresfitnesscenter-image"
+    container_name: ${PG_CONTAINER_NAME}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
+    volumes:
+       - vol_postgresfitnesscenter:/data/postgres-fitnesscenter
+    ports:
+      - "9432:5432"
+    restart: unless-stopped
+volumes:
+    vol_postgresfitnesscenter:
+      external: true
