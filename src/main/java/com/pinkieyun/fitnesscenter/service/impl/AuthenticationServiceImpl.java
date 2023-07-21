@@ -1,9 +1,10 @@
 package com.pinkieyun.fitnesscenter.service.impl;
 
+import com.pinkieyun.fitnesscenter.service.AccountService;
 import com.pinkieyun.fitnesscenter.service.AuthenticationService;
+import com.pinkieyun.fitnesscenter.service.OrganizationService;
 import com.pinkieyun.fitnesscenter.service.PersonService;
 import com.pinkieyun.fitnesscenter.repository.AccountRepository;
-import com.pinkieyun.fitnesscenter.repository.OrganizationRepository;
 import com.pinkieyun.fitnesscenter.repository.RoleRepository;
 import com.pinkieyun.fitnesscenter.repository.TokenRepository;
 
@@ -11,7 +12,7 @@ import com.pinkieyun.fitnesscenter.entity.Account;
 import com.pinkieyun.fitnesscenter.entity.Organization;
 import com.pinkieyun.fitnesscenter.entity.Person;
 import com.pinkieyun.fitnesscenter.entity.Token;
-
+import com.pinkieyun.fitnesscenter.entity.auth.AdminRegisterRequest;
 import com.pinkieyun.fitnesscenter.entity.auth.AuthenticationRequest;
 import com.pinkieyun.fitnesscenter.entity.auth.AuthenticationResponse;
 import com.pinkieyun.fitnesscenter.entity.auth.RegisterRequest;
@@ -37,16 +38,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AccountRepository repository;
     private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
-    private final OrganizationRepository organizationRepository;
     private final AuthenticationManager authenticationManager;
 
     private final PasswordEncoder passwordEncoder;
+    private final OrganizationService organizationService;
     private final JwtServiceImpl jwtService;
     private final PersonService personService;
+    private final AccountService accountService;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request, Integer roleId) {
-        Organization organization = organizationRepository.findById(request.getOrganization()).get();
+        Organization organization = accountService.getCurrentOrganization();
         String username = organization.getId().toString() + "#" + request.getEmail();
         Account account = Account.builder()
                 .email(request.getEmail())
@@ -161,5 +163,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+    }
+
+    @Override
+    public AuthenticationResponse registerAdmin(AdminRegisterRequest request, Integer roleId) {
+        Organization organization = organizationService.findOne(request.getOrganizationId()).get();
+        String username = organization.getId().toString() + "#" + request.getEmail();
+        Account account = Account.builder()
+                .email(request.getEmail())
+                .username(username)
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(roleRepository.findById(roleId).get())
+                .organization(organization)
+                .active(true)
+                .build();
+
+        var savedUser = repository.save(account);
+
+        Person person = new Person();
+        person.setFullName(request.getFullName());
+        person.setDob(request.getDob());
+        person.setIdentityCard(request.getIdentityCard());
+        person.setPhone(request.getPhone());
+        person.setAccount(account);
+    
+        personService.save(person);
+
+        var jwtToken = jwtService.generateToken(account);
+        var refreshToken = jwtService.generateRefreshToken(account);
+
+        saveUserToken(savedUser, jwtToken);
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }
