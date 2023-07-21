@@ -8,6 +8,7 @@ import com.pinkieyun.fitnesscenter.repository.RoleRepository;
 import com.pinkieyun.fitnesscenter.repository.TokenRepository;
 
 import com.pinkieyun.fitnesscenter.entity.Account;
+import com.pinkieyun.fitnesscenter.entity.Organization;
 import com.pinkieyun.fitnesscenter.entity.Person;
 import com.pinkieyun.fitnesscenter.entity.Token;
 
@@ -45,11 +46,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse register(RegisterRequest request, Integer roleId) {
+        Organization organization = organizationRepository.findById(request.getOrganization()).get();
+        String username = organization.getId().toString() + "#" + request.getEmail();
         Account account = Account.builder()
                 .email(request.getEmail())
+                .username(username)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(roleRepository.findById(roleId).get())
-                .organization(organizationRepository.findById(request.getOrganization()).get())
+                .organization(organization)
                 .active(true)
                 .build();
 
@@ -76,12 +80,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        String username = Integer.toString(request.getOrganizationId()) + "#" + request.getEmail();
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        username,
                         request.getPassword()));
 
-        var account = repository.findByEmail(request.getEmail())
+        var account = repository.findByUsername(username)
                 .orElseThrow();
 
         if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
@@ -99,6 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .role(account.getRole().getName())
                 .build();
     }
 
@@ -132,16 +139,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
-        final String userEmail;
+        final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(refreshToken);
-        System.out.println("userEmail: " + userEmail);
+        username = jwtService.extractUsername(refreshToken);
 
-        if (userEmail != null) {
-            var user = this.repository.findByEmail(userEmail)
+        if (username != null) {
+            var user = this.repository.findByUsername(username)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
                 var accessToken = jwtService.generateToken(user);

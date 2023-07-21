@@ -33,7 +33,6 @@ public class Constants {
 
     public interface API {
         String BASE_API = "/api/v1";
-
         String ACCOUNTS = "/accounts";
         String MEMBERS = "/members";
         String STAFFS = "/staffs";

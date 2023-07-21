@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pinkieyun.fitnesscenter.Constants.API;
+import com.pinkieyun.fitnesscenter.entity.dto.IdRequestDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentDTO;
 import com.pinkieyun.fitnesscenter.entity.dto.PaymentFormDTO;
 import com.pinkieyun.fitnesscenter.service.PaymentService;
@@ -26,8 +26,8 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping(API.PAYMENTS)
-    public ResponseEntity<Page<PaymentDTO>> findByOrganizationId(@RequestParam Integer id, Pageable pageable) {
-        return ResponseEntity.ok().body(paymentService.findByOrganizationId(id, pageable));
+    public ResponseEntity<Page<PaymentDTO>> findByOrganizationId(@RequestBody IdRequestDTO idRequestDTO, Pageable pageable) {
+        return ResponseEntity.ok().body(paymentService.findByOrganizationId(idRequestDTO.getId(), pageable));
     }
 
     @PostMapping(API.PAYMENTS + "/create")

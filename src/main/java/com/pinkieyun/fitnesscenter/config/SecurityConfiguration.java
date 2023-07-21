@@ -33,6 +33,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers(
                         "/api/v1/auth/**",
+                        API.BASE_API + API.ORGANIZATIONS,
                         "/test/**",
                         "/v2/api-docs",
                         "/v3/api-docs",

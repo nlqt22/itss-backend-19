@@ -1,6 +1,8 @@
 package com.pinkieyun.fitnesscenter.repository;
 
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +22,7 @@ public interface PersonRepository extends JpaRepository<Person, Integer>, JpaSpe
 
     @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'MEMBER' ORDER BY p.id")
     Page<Person> findByRoleMember(@Param("organizationId") Integer organizationId, Pageable pageable);
+
+    @Query("SELECT p FROM Person p WHERE p.account.email = :email AND p.account.organization.id = :organizationId")
+    Optional<Person> findByAccountEmail(@Param("organizationId")Integer organizationId, @Param("email") String email);
 }

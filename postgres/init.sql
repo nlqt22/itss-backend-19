@@ -15,6 +15,7 @@ INSERT INTO role(name) VALUES ('ADMIN'), ('MEMBER'), ('SALE_STAFF'), ('PT_STAFF'
 CREATE TABLE account(
     id          SERIAL PRIMARY KEY,
     email       VARCHAR,
+    username    VARCHAR,
     password    VARCHAR,
     is_active   BOOLEAN DEFAULT TRUE,
     role_id     SMALLINT,
