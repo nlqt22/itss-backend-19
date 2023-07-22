@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                 .requestMatchers(API.BASE_API + API.STAFFS + "/**").hasAnyAuthority(ROLE.ADMIN)
                 .requestMatchers(API.BASE_API + API.EQUIPMENTS + "/**").hasAnyAuthority(ROLE.ADMIN)
                 .requestMatchers(API.BASE_API + API.PACKS + "/**").hasAnyAuthority(ROLE.ADMIN)
-                .requestMatchers(API.BASE_API + API.PAYMENTS).hasAnyAuthority(ROLE.SALE, ROLE.ADMIN)
+                .requestMatchers(API.BASE_API + API.PAYMENTS + "/**").hasAnyAuthority(ROLE.SALE, ROLE.ADMIN)
                 .requestMatchers(HttpMethod.GET, API.BASE_API + API.PAYMENTS + "/my-payment").hasAnyAuthority(ROLE.MEMBER)
                 .requestMatchers(HttpMethod.GET, API.BASE_API + API.FEEDBACK + "/to-me").hasAnyAuthority(ROLE.SALE, ROLE.PT)
                 .requestMatchers(HttpMethod.POST, API.BASE_API + API.FEEDBACK).hasAnyAuthority(ROLE.MEMBER)
