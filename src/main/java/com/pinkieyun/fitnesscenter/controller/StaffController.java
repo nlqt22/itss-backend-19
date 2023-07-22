@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,6 @@ public class StaffController {
     
     private final PersonService personService;
     private final AuthenticationService authenticationService;
-
-    // public ResponseEntity<Page<PersonDTO>> findByOrganizationId()
 
     @GetMapping(API.STAFFS + "/sale")
     public ResponseEntity<Page<PersonDTO>> findAllStaffSaleActive(Pageable pageable) {
@@ -64,4 +63,8 @@ public class StaffController {
         return ResponseEntity.ok(authenticationService.register(request, PT_ROLE_ID));
     }
 
+    @DeleteMapping(API.STAFFS + "/{id}")
+    public ResponseEntity<Optional<PersonDTO>> delete(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(personService.changeActive(id));
+    }
 }
