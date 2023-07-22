@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.pinkieyun.fitnesscenter.entity.Equipment;
+import com.pinkieyun.fitnesscenter.entity.dto.EquipmentFormDTO;
 
 public interface EquipmentService {
 
@@ -13,7 +14,9 @@ public interface EquipmentService {
 
     public Page<Equipment> findAll(Pageable pageable);
 
-    public Equipment save(Equipment equipment);
+    public Optional<Equipment> save(EquipmentFormDTO equipmentFormDTO);
 
-    public Equipment update(Integer id, Equipment equipment);
+    public Optional<Equipment> update(Integer id, EquipmentFormDTO equipmentFormDTO);
+
+    public Optional<Equipment> changeActive(Integer id);
 }

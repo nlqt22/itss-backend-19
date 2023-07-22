@@ -116,6 +116,7 @@ public class PersonServiceImpl implements PersonService {
     public Person update(Integer id, Person person) {
         return findOne(id).map(p -> {
             person.setId(id);
+            person.setAccount(p.getAccount());
             return personRepository.save(person);
         }).orElseThrow();
     }

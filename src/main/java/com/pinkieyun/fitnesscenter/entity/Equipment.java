@@ -1,6 +1,6 @@
 package com.pinkieyun.fitnesscenter.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 @Entity
 @Table(name = "equipment")
 public class Equipment {
@@ -25,23 +25,20 @@ public class Equipment {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "quantity")
+    @Column(name = "qty")
     private Integer quantity;
 
     @Column(name = "import_date")
-    private Timestamp importDate;
+    private LocalDateTime importDate;
 
     @Column(name = "latest_updated")
-    private Timestamp latestUpdated;
-
-    @Column(name = "status")
-    private Integer status;
+    private LocalDateTime latestUpdated;
 
     @Column(name = "origin")
     private String origin;
     
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "organization_id")

@@ -83,6 +83,7 @@ public class AccountServiceImpl implements AccountService {
     public Account update(Integer id, Account account) {
         return findOne(id).map(acc -> {
             account.setId(id);
+            account.setOrganization(acc.getOrganization());
             return accountRepository.save(account);
         }).orElseThrow();
     }

@@ -5,12 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class PaymentFormDTO {
-
+@AllArgsConstructor
+public class MemberTrackFormDTO {
     private Integer memberId;
-
-    private Integer packId;
-
 }

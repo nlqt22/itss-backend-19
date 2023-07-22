@@ -14,13 +14,13 @@ import com.pinkieyun.fitnesscenter.entity.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Integer>, JpaSpecificationExecutor<Person> {
     
-    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'SALE_STAFF' ORDER BY p.id")
+    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'SALE_STAFF' AND p.account.active = TRUE ORDER BY p.id")
     Page<Person> findByRoleSale(@Param("organizationId") Integer organizationId, Pageable pageable);
 
-    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'PT_STAFF' ORDER BY p.id")
+    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'PT_STAFF' AND p.account.active = TRUE ORDER BY p.id")
     Page<Person> findByRolePT(@Param("organizationId") Integer organizationId, Pageable pageable);
 
-    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'MEMBER' ORDER BY p.id")
+    @Query("SELECT p FROM Person p WHERE p.account.organization.id = :organizationId AND p.account.role.name = 'MEMBER' AND p.account.active = TRUE ORDER BY p.id")
     Page<Person> findByRoleMember(@Param("organizationId") Integer organizationId, Pageable pageable);
 
     @Query("SELECT p FROM Person p WHERE p.account.email = :email AND p.account.organization.id = :organizationId")

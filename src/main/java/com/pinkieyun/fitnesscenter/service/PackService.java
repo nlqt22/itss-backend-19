@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.pinkieyun.fitnesscenter.entity.Pack;
+import com.pinkieyun.fitnesscenter.entity.dto.PackFormDTO;
 
 public interface PackService {
     
@@ -13,7 +14,9 @@ public interface PackService {
 
     public Page<Pack> findAllActive(Pageable pageable);
 
-    public Pack save(Pack pack);
+    public Optional<Pack> save(PackFormDTO packFormDTO);
 
-    public Pack update(Integer id, Pack pack);
+    public Optional<Pack> update(Integer id, PackFormDTO packFormDTO);
+
+    public Optional<Pack> changeActive(Integer id);
 }

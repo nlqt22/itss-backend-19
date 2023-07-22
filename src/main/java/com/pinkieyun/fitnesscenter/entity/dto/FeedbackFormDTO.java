@@ -5,12 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class PaymentFormDTO {
+@AllArgsConstructor
+public class FeedbackFormDTO {
 
-    private Integer memberId;
-
-    private Integer packId;
-
+    private String message;
+    
 }

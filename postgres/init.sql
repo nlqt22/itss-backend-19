@@ -37,7 +37,6 @@ CREATE TABLE person(
 CREATE TABLE equipment(
     id              SERIAL PRIMARY KEY,
     name            VARCHAR,
-    price           FLOAT,
     qty             INT,
     origin          VARCHAR,
     import_date     TIMESTAMP,
@@ -84,4 +83,19 @@ CREATE TABLE token(
     expired             BOOLEAN,
     account_id          INT,
     FOREIGN KEY (account_id) REFERENCES account(id)
+);
+
+CREATE TABLE feedback(
+    id              SERIAL PRIMARY KEY,
+    message         VARCHAR,
+    created_date    TIMESTAMP,
+    from_member     INT,
+    FOREIGN KEY (from_member) REFERENCES person(id)
+);
+
+CREATE TABLE member_track(
+    id              SERIAL PRIMARY KEY,
+    member_id       INT,
+    check_in        TIMESTAMP,
+    FOREIGN KEY (member_id) REFERENCES person(id)
 );

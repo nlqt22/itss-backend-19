@@ -3,20 +3,22 @@ package com.pinkieyun.fitnesscenter.entity.dto;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipmentFormDTO {
+public class FeedbackDTO {
 
-    private String name;
+    private Integer id;
 
-    private Integer quantity;
+    private String message;
 
-    private LocalDateTime importDate;
-
-    private String origin;
+    private LocalDateTime createdDate;
+    
+    private PersonDTO from;
 
 }

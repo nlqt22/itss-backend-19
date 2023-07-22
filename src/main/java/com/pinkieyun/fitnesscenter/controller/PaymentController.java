@@ -29,13 +29,15 @@ public class PaymentController {
         return ResponseEntity.ok().body(paymentService.findAll(pageable));
     }
 
+    @GetMapping(API.PAYMENTS + "/my-payment")
     public ResponseEntity<Page<PaymentDTO>> findYourAll(Pageable pageable) {
         return ResponseEntity.ok().body(paymentService.findYourAll(pageable));
     }
 
     @PostMapping(API.PAYMENTS + "/create")
     public ResponseEntity<Optional<PaymentDTO>> createPayment(@RequestBody PaymentFormDTO paymentFormDTO) {
-        System.out.println("PAYMMENT" + paymentFormDTO.toString());
         return ResponseEntity.ok().body(paymentService.create(paymentFormDTO));
     }
+
+    
 }

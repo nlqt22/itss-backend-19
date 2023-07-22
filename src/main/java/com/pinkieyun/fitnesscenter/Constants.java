@@ -27,8 +27,9 @@ public class Constants {
 
     public interface ROLE {
         String ADMIN = "ADMIN";
-        String PT = "PT";
-        String SALE = "SALE";
+        String PT = "PT_STAFF";
+        String SALE = "SALE_STAFF";
+        String MEMBER = "MEMBER";
     }
 
     public interface API {
@@ -36,6 +37,9 @@ public class Constants {
         String ACCOUNTS = "/accounts";
         String MEMBERS = "/members";
         String STAFFS = "/staffs";
+        String TRACKS = "/tracks";
+        String EQUIPMENTS = "/equipments";
+        String FEEDBACK = "/feedbacks";
         String PAYMENTS = "/payments";
         String PACKS = "/packs";
         String ORGANIZATIONS = "/organizations";

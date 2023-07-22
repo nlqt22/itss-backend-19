@@ -16,7 +16,8 @@ import com.pinkieyun.fitnesscenter.entity.auth.AdminRegisterRequest;
 import com.pinkieyun.fitnesscenter.entity.auth.AuthenticationRequest;
 import com.pinkieyun.fitnesscenter.entity.auth.AuthenticationResponse;
 import com.pinkieyun.fitnesscenter.entity.auth.RegisterRequest;
-
+import com.pinkieyun.fitnesscenter.exception.BusinessError;
+import com.pinkieyun.fitnesscenter.exception.BusinessErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -48,8 +50,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse register(RegisterRequest request, Integer roleId) {
+
         Organization organization = accountService.getCurrentOrganization();
         String username = organization.getId().toString() + "#" + request.getEmail();
+
+        if(accountService.findByUsername(username).isPresent()) {
+            throw new BusinessErrorException().businessError(
+                new BusinessError().errorCode("error.account.existsEmail")
+                                    .params(Collections.singletonList(request.getEmail()))
+            );
+        }
+
         Account account = Account.builder()
                 .email(request.getEmail())
                 .username(username)
@@ -62,6 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var savedUser = repository.save(account);
 
         Person person = new Person();
+
         person.setFullName(request.getFullName());
         person.setDob(request.getDob());
         person.setIdentityCard(request.getIdentityCard());
@@ -108,7 +120,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .role(account.getRole().getName())
-                .organizationId(account.getOrganization().getId())
                 .build();
     }
 

@@ -10,6 +10,6 @@ import com.pinkieyun.fitnesscenter.entity.Equipment;
 
 public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
     
-    @Query(value = "SELECT e FROM Equipment e WHERE e.organization.id = :organizationId ORDER BY e.latestUpdated")
+    @Query(value = "SELECT e FROM Equipment e WHERE e.organization.id = :organizationId AND e.active = TRUE ORDER BY e.latestUpdated")
     Page<Equipment> findByOrganizationId(@Param("organizationId") Integer organizationId, Pageable pageable);
 }

@@ -9,14 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EquipmentFormDTO {
+public class MemberTrackDTO {
 
-    private String name;
+    private Integer id;
 
-    private Integer quantity;
-
-    private LocalDateTime importDate;
-
-    private String origin;
-
+    private LocalDateTime checkInTime;
+    
+    private PersonDTO member;
 }

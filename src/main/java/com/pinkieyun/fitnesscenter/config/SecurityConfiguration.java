@@ -3,6 +3,7 @@ package com.pinkieyun.fitnesscenter.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -50,9 +51,16 @@ public class SecurityConfiguration {
                         "/webjars/**",
                         "/swagger-ui.html")
                 .permitAll()
-                .requestMatchers(API.BASE_API + API.MEMBERS + "/**").hasAnyAuthority(ROLE.ADMIN)
-                .requestMatchers(API.BASE_API + API.STAFFS + "/sale/**").hasAnyAuthority(ROLE.ADMIN)
-                .requestMatchers(API.BASE_API + API.PAYMENTS + "/**").hasAnyAuthority(ROLE.ADMIN)
+                .requestMatchers(API.BASE_API + API.STAFFS + "/**").hasAnyAuthority(ROLE.ADMIN)
+                .requestMatchers(API.BASE_API + API.EQUIPMENTS + "/**").hasAnyAuthority(ROLE.ADMIN)
+                .requestMatchers(API.BASE_API + API.PACKS + "/**").hasAnyAuthority(ROLE.ADMIN)
+                .requestMatchers(API.BASE_API + API.PAYMENTS).hasAnyAuthority(ROLE.SALE, ROLE.ADMIN)
+                .requestMatchers(HttpMethod.GET, API.BASE_API + API.PAYMENTS + "/my-payment").hasAnyAuthority(ROLE.MEMBER)
+                .requestMatchers(HttpMethod.GET, API.BASE_API + API.FEEDBACK + "/to-me").hasAnyAuthority(ROLE.SALE, ROLE.PT)
+                .requestMatchers(HttpMethod.POST, API.BASE_API + API.FEEDBACK).hasAnyAuthority(ROLE.MEMBER)
+                .requestMatchers(API.BASE_API + API.TRACKS + "/**").hasAnyAuthority(ROLE.MEMBER)
+                .requestMatchers(API.BASE_API + API.MEMBERS + "/**").hasAnyAuthority(ROLE.SALE, ROLE.ADMIN)
+
 
                 .anyRequest()
                 .authenticated()
